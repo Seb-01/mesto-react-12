@@ -14,18 +14,57 @@ import ImagePopup from "./mesto_imagepopup/ImagePopup";
 
 function App() {
 
-  // обработчики
+  // переменная состояния, отвечающая за полноразмерную картинку
+  const [selectedCard, setSelectedCard] = React.useState('');
+
+
+  // обработчики нажатия на карточку
+  function handleCardClick (card) {
+    setSelectedCard(card);
+  }
+
+  // переменные состояния, отвечающие за видимость трёх попапов
+  const [popups, setPopups] = React.useState({
+    isEditProfilePopupOpen: false,
+    isAddPlacePopupOpen: false,
+    isEditAvatarPopupOpen: false
+  });
+
+  // обработчики нажатия на кнопки
   function handleEditAvatarClick (evt) {
-    document.querySelector('.popup_target_edit-avatar').classList.add('popup_opened');
+    setPopups({
+      isEditProfilePopupOpen: popups.isEditProfilePopupOpen,
+      isAddPlacePopupOpen: popups.isAddPlacePopupOpen,
+      isEditAvatarPopupOpen: true
+    });
   }
 
 
   function handleEditProfileClick (evt) {
-    document.querySelector('.popup_target_edit-profile').classList.add('popup_opened');
+    setPopups({
+      isEditProfilePopupOpen: true,
+      isAddPlacePopupOpen: popups.isAddPlacePopupOpen,
+      isEditAvatarPopupOpen: popups.isEditAvatarPopupOpen
+    });
   }
 
   function handleAddPlaceClick (evt) {
-    document.querySelector('.popup_target_add-place').classList.add('popup_opened');
+    setPopups({
+      isEditProfilePopupOpen: popups.isEditProfilePopupOpen,
+      isAddPlacePopupOpen: true,
+      isEditAvatarPopupOpen: popups.isEditAvatarPopupOpen
+    });
+  }
+
+  // закрытие попапов
+  function closeAllPopups (evt) {
+    setPopups({
+      isEditProfilePopupOpen: false,
+      isAddPlacePopupOpen: false,
+      isEditAvatarPopupOpen: false
+    });
+
+    setSelectedCard("");
   }
 
 
@@ -37,12 +76,15 @@ function App() {
     <Main avatar={avatar} name="Жак-Ив Кусто" about="Исследователь океана"
       onEditProfile={handleEditProfileClick}
       onAddPlace={handleAddPlaceClick}
-      onEditAvatar={handleEditAvatarClick} />
+      onEditAvatar={handleEditAvatarClick}
+      onCardClick={handleCardClick} />
 
     <Footer/>
 
     {/* popups */}
-    <PopupWithForm name="edit-profile" title="Редактировать профиль">
+    <PopupWithForm name="edit-profile" title="Редактировать профиль"
+      isOpen={popups.isEditProfilePopupOpen}
+      onClose={closeAllPopups}>
       <fieldset className="popup__info">
         <label className="popup__field">
           <input
@@ -52,8 +94,8 @@ function App() {
             value=""
             name="name"
             placeholder="Введите имя"
-            minlength="2"
-            maxlength="40"
+            minlenght="2"
+            maxlenght="40"
             required
           />
           <span className="popup__input-error name-input-error"></span>
@@ -66,8 +108,8 @@ function App() {
             value=""
             name="job"
             placeholder="Введите род занятий"
-            minlength="2"
-            maxlength="200"
+            minlenght="2"
+            maxlenght="200"
             required
           />
           <span className="popup__input-error job-input-error"></span>
@@ -75,7 +117,9 @@ function App() {
       </fieldset>
     </PopupWithForm>
 
-    <PopupWithForm name="add-place" title="Новое место">
+    <PopupWithForm name="add-place" title="Новое место"
+      isOpen={popups.isAddPlacePopupOpen}
+      onClose={closeAllPopups}>
       <fieldset className="popup__info">
         <label className="popup__field">
           <input
@@ -85,8 +129,8 @@ function App() {
             value=""
             name="name"
             placeholder="Название"
-            minlength="2"
-            maxlength="30"
+            minlenght="2"
+            maxlenght="30"
             required
           />
           <span className="popup__input-error mesto-name-input-error"></span>
@@ -106,7 +150,9 @@ function App() {
         </fieldset>
     </PopupWithForm>
 
-    <PopupWithForm name="edit-avatar" title="Обновить аватар">
+    <PopupWithForm name="edit-avatar" title="Обновить аватар"
+      isOpen={popups.isEditAvatarPopupOpen}
+      onClose={closeAllPopups}>
       <fieldset className="popup__info">
         <label className="popup__field">
           <input
@@ -125,32 +171,7 @@ function App() {
 
     <PopupWithForm name="confirm-delete" title="Вы уверены?"/>
 
-    <ImagePopup/>
-
-
-
-    {/* card-template */}
-    <template id="card-template">
-      <article className="elements__card">
-        <button
-          className="elements__trash-button"
-          type="button"
-          aria-label="Trash button"
-        ></button>
-        <img className="elements__photo" src="#" alt="" />
-        <div className="elements__wrapper">
-          <h2 className="elements__title">Карточка</h2>
-          <div className="elements__like-zone-wrapper">
-            <button
-              className="elements__like-button"
-              type="button"
-              aria-label="Like button"
-            ></button>
-            <p className="elements__likes-number">0</p>
-          </div>
-        </div>
-      </article>
-    </template>
+    <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 
   </div>
   );

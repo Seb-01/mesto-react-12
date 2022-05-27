@@ -2,7 +2,7 @@ import React from "react";
 
 function PopupWithForm(props) {
   return (
-    <div className={`popup popup_target_${props.name}`}  >
+    <div className={`popup popup_target_${props.name} ${props.isOpen && 'popup_opened'}`}  >
       {/* Правильно подставляем имя формы! */}
       {/* edit-avatar (EditAvatar),  edit-profile (EditProfile),  add-place (AddPlace), confirm-delete (ConfirmDelete) */}
 
@@ -19,6 +19,7 @@ function PopupWithForm(props) {
           className="popup__close-button"
           type="button"
           aria-label="Close button"
+          onClick={props.onClose}
         ></button>
       </div>
     </div>
