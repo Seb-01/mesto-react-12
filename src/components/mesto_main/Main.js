@@ -78,8 +78,8 @@ function Main(props) {
       {/* elements */}
       <section className="elements">
         {/* карточки отображаем */}
-        {cards.map((item,index) => (
-          <Card key={index} card={item} onCardClick={props.onCardClick}/>
+        {cards.map((item) => (
+          <Card key={item._id} card={item} onCardClick={props.onCardClick}/>
           )
         )}
       </section>

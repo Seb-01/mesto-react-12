@@ -15,7 +15,8 @@ import ImagePopup from "./mesto_imagepopup/ImagePopup";
 function App() {
 
   // переменная состояния, отвечающая за полноразмерную картинку
-  const [selectedCard, setSelectedCard] = React.useState('');
+  // {} т.к. ожидаем что здесь будет объект с данными карточки
+  const [selectedCard, setSelectedCard] = React.useState({});
 
 
   // обработчики нажатия на карточку
@@ -33,26 +34,23 @@ function App() {
   // обработчики нажатия на кнопки
   function handleEditAvatarClick (evt) {
     setPopups({
-      isEditProfilePopupOpen: popups.isEditProfilePopupOpen,
-      isAddPlacePopupOpen: popups.isAddPlacePopupOpen,
-      isEditAvatarPopupOpen: true
+      ...popups, // здесь мы копируем текущее состояние объекта
+      isEditAvatarPopupOpen: true //здесь перезаписываем свойство isEditAvatarPopupOpen
     });
   }
 
 
   function handleEditProfileClick (evt) {
     setPopups({
-      isEditProfilePopupOpen: true,
-      isAddPlacePopupOpen: popups.isAddPlacePopupOpen,
-      isEditAvatarPopupOpen: popups.isEditAvatarPopupOpen
+      ...popups, // здесь мы копируем текущее состояние объекта
+      isEditProfilePopupOpen: true, //здесь перезаписываем свойство isEditProfilePopupOpen
     });
   }
 
   function handleAddPlaceClick (evt) {
     setPopups({
-      isEditProfilePopupOpen: popups.isEditProfilePopupOpen,
-      isAddPlacePopupOpen: true,
-      isEditAvatarPopupOpen: popups.isEditAvatarPopupOpen
+      ...popups, // здесь мы копируем текущее состояние объекта
+      isAddPlacePopupOpen: true, //здесь перезаписываем свойство isAddPlacePopupOpen
     });
   }
 
@@ -64,7 +62,7 @@ function App() {
       isEditAvatarPopupOpen: false
     });
 
-    setSelectedCard("");
+    setSelectedCard({});
   }
 
 
@@ -82,7 +80,7 @@ function App() {
     <Footer/>
 
     {/* popups */}
-    <PopupWithForm name="edit-profile" title="Редактировать профиль"
+    <PopupWithForm name="edit-profile" title="Редактировать профиль" buttonSubmitText="Cохранить"
       isOpen={popups.isEditProfilePopupOpen}
       onClose={closeAllPopups}>
       <fieldset className="popup__info">
@@ -117,7 +115,7 @@ function App() {
       </fieldset>
     </PopupWithForm>
 
-    <PopupWithForm name="add-place" title="Новое место"
+    <PopupWithForm name="add-place" title="Новое место" buttonSubmitText="Cоздать"
       isOpen={popups.isAddPlacePopupOpen}
       onClose={closeAllPopups}>
       <fieldset className="popup__info">
@@ -150,7 +148,7 @@ function App() {
         </fieldset>
     </PopupWithForm>
 
-    <PopupWithForm name="edit-avatar" title="Обновить аватар"
+    <PopupWithForm name="edit-avatar" title="Обновить аватар" buttonSubmitText="Cохранить"
       isOpen={popups.isEditAvatarPopupOpen}
       onClose={closeAllPopups}>
       <fieldset className="popup__info">
@@ -169,7 +167,7 @@ function App() {
       </fieldset>
     </PopupWithForm>
 
-    <PopupWithForm name="confirm-delete" title="Вы уверены?"/>
+    <PopupWithForm name="confirm-delete" title="Вы уверены?" buttonSubmitText="Да"/>
 
     <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 

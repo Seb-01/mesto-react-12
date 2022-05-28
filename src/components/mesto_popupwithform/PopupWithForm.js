@@ -13,7 +13,7 @@ function PopupWithForm(props) {
           {/* тут будет вложенное содержимое в виде JSX-разметки */}
           {props.children}
 
-          <button className="popup__save-button" type="submit">Сохранить</button>
+          <button className="popup__save-button" type="submit">{props.buttonSubmitText}</button>
         </form>
         <button
           className="popup__close-button"
