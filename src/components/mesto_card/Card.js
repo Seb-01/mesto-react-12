@@ -1,6 +1,27 @@
 import React from "react";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function Card(props) {
+
+  // подписываемся на контекст CurrentUserContext
+  const currentUser = React.useContext(CurrentUserContext);
+
+  // Определяем, являемся ли мы владельцем текущей карточки
+  const isOwn = props.card.owner._id === currentUser._id;
+
+  // Создаём переменную, которую после зададим в `className` для кнопки удаления
+  const cardDeleteButtonClassName = (
+    `elements__trash-button ${isOwn ? '' : 'elements__trash-button_hidden'}`
+  );
+
+  // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
+  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+
+  // Создаём переменную, которую после зададим в `className` для кнопки лайка
+  const cardLikeButtonClassName = (
+    `elements__like-button ${isLiked ? 'elements__like-button_active' : ''}`
+  );
+
 
   function handleClick() {
     props.onCardClick(props.card);
@@ -9,7 +30,7 @@ function Card(props) {
   return (
     <article className="elements__card">
       <button
-        className="elements__trash-button"
+        className={cardDeleteButtonClassName}
         type="button"
         aria-label="Trash button"
       ></button>
@@ -20,7 +41,7 @@ function Card(props) {
         <h2 className="elements__title">{props.card.name}</h2>
         <div className="elements__like-zone-wrapper">
           <button
-            className="elements__like-button"
+            className={cardLikeButtonClassName}
             type="button"
             aria-label="Like button"
           ></button>

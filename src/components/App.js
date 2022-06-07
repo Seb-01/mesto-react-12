@@ -11,8 +11,43 @@ import PopupWithForm from './mesto_popupwithform/PopupWithForm';
 
 import ImagePopup from "./mesto_imagepopup/ImagePopup";
 
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import {api} from "../utils/Api";
+
 
 function App() {
+
+  // данные текущего пользователя
+  const [currentUser, setCurrentUser] = React.useState(
+    {
+      name: '',
+      about: '',
+      avatar: '',
+      _id: ''
+    }
+  );
+
+  // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
+  // запрос в API за профилем пользователя
+  React.useEffect(() => {
+    api.getUserProfile()
+    // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+    .then ((userData) => {
+      // меняем состояние профиля пользователя
+      setCurrentUser(
+        {
+          name: userData.name,
+          about: userData.about,
+          avatar: userData.avatar,
+          _id: userData._id
+        }
+      );
+    })
+    .catch((err) => {
+      console.log(`Ошибка при запросе данных пользователя: ${err}!`)
+    });
+
+  }, []);
 
   // переменная состояния, отвечающая за полноразмерную картинку
   // {} т.к. ожидаем что здесь будет объект с данными карточки
@@ -66,113 +101,116 @@ function App() {
   }
 
 
-  return (
-    <div className="page">
+    return (
+      // внедряем общий контекст с помощью провайдера со значением стейта currentUser
+      <CurrentUserContext.Provider value ={currentUser}>
+        <div className="page">
 
-    <Header logo={logo_mesto_header}/>
+        <Header logo={logo_mesto_header}/>
 
-    <Main avatar={avatar} name="Жак-Ив Кусто" about="Исследователь океана"
-      onEditProfile={handleEditProfileClick}
-      onAddPlace={handleAddPlaceClick}
-      onEditAvatar={handleEditAvatarClick}
-      onCardClick={handleCardClick} />
+        <Main avatar={avatar} name="Жак-Ив Кусто" about="Исследователь океана"
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick} />
 
-    <Footer/>
+        <Footer/>
 
-    {/* popups */}
-    <PopupWithForm name="edit-profile" title="Редактировать профиль" buttonSubmitText="Cохранить"
-      isOpen={popups.isEditProfilePopupOpen}
-      onClose={closeAllPopups}>
-      <fieldset className="popup__info">
-        <label className="popup__field">
-          <input
-            id="name-input"
-            type="text"
-            className="popup__input popup__input_field_name"
-            value=""
-            name="name"
-            placeholder="Введите имя"
-            minlenght="2"
-            maxlenght="40"
-            required
-          />
-          <span className="popup__input-error name-input-error"></span>
-        </label>
-        <label className="popup__field">
-          <input
-            id="job-input"
-            type="text"
-            className="popup__input popup__input_field_job"
-            value=""
-            name="job"
-            placeholder="Введите род занятий"
-            minlenght="2"
-            maxlenght="200"
-            required
-          />
-          <span className="popup__input-error job-input-error"></span>
-        </label>
-      </fieldset>
-    </PopupWithForm>
+        {/* popups */}
+        <PopupWithForm name="edit-profile" title="Редактировать профиль" buttonSubmitText="Cохранить"
+          isOpen={popups.isEditProfilePopupOpen}
+          onClose={closeAllPopups}>
+          <fieldset className="popup__info">
+            <label className="popup__field">
+              <input
+                id="name-input"
+                type="text"
+                className="popup__input popup__input_field_name"
+                value=""
+                name="name"
+                placeholder="Введите имя"
+                minlenght="2"
+                maxlenght="40"
+                required
+              />
+              <span className="popup__input-error name-input-error"></span>
+            </label>
+            <label className="popup__field">
+              <input
+                id="job-input"
+                type="text"
+                className="popup__input popup__input_field_job"
+                value=""
+                name="job"
+                placeholder="Введите род занятий"
+                minlenght="2"
+                maxlenght="200"
+                required
+              />
+              <span className="popup__input-error job-input-error"></span>
+            </label>
+          </fieldset>
+        </PopupWithForm>
 
-    <PopupWithForm name="add-place" title="Новое место" buttonSubmitText="Cоздать"
-      isOpen={popups.isAddPlacePopupOpen}
-      onClose={closeAllPopups}>
-      <fieldset className="popup__info">
-        <label className="popup__field">
-          <input
-            id="mesto-name-input"
-            type="text"
-            className="popup__input popup__input_field_mesto-name"
-            value=""
-            name="name"
-            placeholder="Название"
-            minlenght="2"
-            maxlenght="30"
-            required
-          />
-          <span className="popup__input-error mesto-name-input-error"></span>
-        </label>
-        <label className="popup__field">
-          <input
-            id="link-input"
-            className="popup__input popup__input_field_link"
-            value=""
-            name="link"
-            placeholder="Сcылка на картинку"
-            type="url"
-            required
-          />
-          <span className="popup__input-error link-input-error"></span>
-        </label>
-        </fieldset>
-    </PopupWithForm>
+        <PopupWithForm name="add-place" title="Новое место" buttonSubmitText="Cоздать"
+          isOpen={popups.isAddPlacePopupOpen}
+          onClose={closeAllPopups}>
+          <fieldset className="popup__info">
+            <label className="popup__field">
+              <input
+                id="mesto-name-input"
+                type="text"
+                className="popup__input popup__input_field_mesto-name"
+                value=""
+                name="name"
+                placeholder="Название"
+                minlenght="2"
+                maxlenght="30"
+                required
+              />
+              <span className="popup__input-error mesto-name-input-error"></span>
+            </label>
+            <label className="popup__field">
+              <input
+                id="link-input"
+                className="popup__input popup__input_field_link"
+                value=""
+                name="link"
+                placeholder="Сcылка на картинку"
+                type="url"
+                required
+              />
+              <span className="popup__input-error link-input-error"></span>
+            </label>
+            </fieldset>
+        </PopupWithForm>
 
-    <PopupWithForm name="edit-avatar" title="Обновить аватар" buttonSubmitText="Cохранить"
-      isOpen={popups.isEditAvatarPopupOpen}
-      onClose={closeAllPopups}>
-      <fieldset className="popup__info">
-        <label className="popup__field">
-          <input
-            id="avatar-link-input"
-            className="popup__input popup__input_field_link"
-            value=""
-            name="link"
-            placeholder="Сcылка на аватар"
-            type="url"
-            required
-          />
-          <span className="popup__input-error avatar-link-input-error"></span>
-        </label>
-      </fieldset>
-    </PopupWithForm>
+        <PopupWithForm name="edit-avatar" title="Обновить аватар" buttonSubmitText="Cохранить"
+          isOpen={popups.isEditAvatarPopupOpen}
+          onClose={closeAllPopups}>
+          <fieldset className="popup__info">
+            <label className="popup__field">
+              <input
+                id="avatar-link-input"
+                className="popup__input popup__input_field_link"
+                value=""
+                name="link"
+                placeholder="Сcылка на аватар"
+                type="url"
+                required
+              />
+              <span className="popup__input-error avatar-link-input-error"></span>
+            </label>
+          </fieldset>
+        </PopupWithForm>
 
-    <PopupWithForm name="confirm-delete" title="Вы уверены?" buttonSubmitText="Да"/>
+        <PopupWithForm name="confirm-delete" title="Вы уверены?" buttonSubmitText="Да"/>
 
-    <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
+        <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 
-  </div>
-  );
+      </div>
+      </CurrentUserContext.Provider>
+    );
 }
 
 export default App;

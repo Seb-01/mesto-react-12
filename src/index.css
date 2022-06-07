@@ -49,7 +49,7 @@
 @import url(./blocks/elements/__like-button/elements__like-button.css);
 @import url(./blocks/elements/__like-button/_active/elements__like-button_active.css);
 @import url(./blocks/elements/__trash-button/elements__trash-button.css);
-
+@import url(./blocks/elements/__trash-button/_hidden/elements__trash-button_hidden.css);
 @import url(./blocks/elements/__like-zone-wrapper/elements____like-zone-wrapper.css);
 @import url(./blocks/elements/__likes-number/elements__likes-number.css);
 

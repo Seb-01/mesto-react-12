@@ -3,12 +3,12 @@ import {api} from "../../utils/Api";
 
 import Card from "../mesto_card/Card";
 
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+
 function Main(props) {
 
-  // переменные состояния, отвечающие за стейт данных о пользователе. По отдельности!
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
+  // подписываемся на контекст CurrentUserContext
+  const currentUser = React.useContext(CurrentUserContext);
 
   // переменная состояния, отвечающая за стейт данных о карточках
   const [cards, setCards] = React.useState(
@@ -16,24 +16,17 @@ function Main(props) {
   );
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
-  // запрос в API за пользовательскими данными
+  // запрос в API за карточками
   React.useEffect(() => {
-    const promiseUser = api.getUserProfile();
-    const promiseCards = api.getInitialCards();
+    api.getInitialCards()
 
-    Promise.all([promiseUser, promiseCards])
-    // обрабатываем полученные данные
-    // деструктурируем ответ от сервера, чтобы было понятнее, что пришло
-    .then (([userData, cards]) => {
-      // меняем состояние профиля пользователя
-      setUserName(userData.name);
-      setUserDescription(userData.about);
-      setUserAvatar(userData.avatar);
+    // обрабатываем полученные данные деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+    .then ((cards) => {
       // карточки загружаем
       setCards(cards);
     })
     .catch((err) => {
-      console.log(`Ошибка при запросе данных пользователя и карточек: ${err}!`)
+      console.log(`Ошибка при запросе карточек: ${err}!`)
     });
 
   }, []);
@@ -50,14 +43,14 @@ function Main(props) {
           >
           <img
             className="profile__avatar"
-            src={userAvatar}
+            src={currentUser.avatar}
             alt="Аватар пользователя"
           />
         </button>
 
         <div className="profile__info">
           <div className="profile__wrapper">
-            <h1 className="profile__title">{userName}</h1>
+            <h1 className="profile__title">{currentUser.name}</h1>
             <button
               className="profile__edit-button"
               type="button"
@@ -65,7 +58,7 @@ function Main(props) {
               onClick={props.onEditProfile}
             ></button>
           </div>
-          <p className="profile__subtitle">{userDescription}</p>
+          <p className="profile__subtitle">{currentUser.about}</p>
         </div>
         <button
           className="profile__add-button"
