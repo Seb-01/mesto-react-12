@@ -13,7 +13,7 @@ import ImagePopup from "./mesto_imagepopup/ImagePopup";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import {api} from "../utils/Api";
-
+import EditProfilePopup from "./mesto_editprofilepopup/EditProfilePopup";
 
 function App() {
 
@@ -100,6 +100,29 @@ function App() {
     setSelectedCard({});
   }
 
+  // обработчик изменения профиля пользователя
+  function handleUpdateUser(newProfile) {
+    // запрос на сервер: сохранить новые данные пользователя
+    api.saveNewProfile(newProfile)
+      // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+      .then ((userData) => {
+        // меняем состояние профиля пользователя
+        setCurrentUser(
+          {
+            ...currentUser,
+            name: userData.name,
+            about: userData.about,
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(`Ошибка при сохранении данных пользователя: ${err}!`)
+      });
+
+    // закрываем все модальные окна
+    closeAllPopups();
+  }
+
 
     return (
       // внедряем общий контекст с помощью провайдера со значением стейта currentUser
@@ -117,40 +140,8 @@ function App() {
         <Footer/>
 
         {/* popups */}
-        <PopupWithForm name="edit-profile" title="Редактировать профиль" buttonSubmitText="Cохранить"
-          isOpen={popups.isEditProfilePopupOpen}
-          onClose={closeAllPopups}>
-          <fieldset className="popup__info">
-            <label className="popup__field">
-              <input
-                id="name-input"
-                type="text"
-                className="popup__input popup__input_field_name"
-                value=""
-                name="name"
-                placeholder="Введите имя"
-                minlenght="2"
-                maxlenght="40"
-                required
-              />
-              <span className="popup__input-error name-input-error"></span>
-            </label>
-            <label className="popup__field">
-              <input
-                id="job-input"
-                type="text"
-                className="popup__input popup__input_field_job"
-                value=""
-                name="job"
-                placeholder="Введите род занятий"
-                minlenght="2"
-                maxlenght="200"
-                required
-              />
-              <span className="popup__input-error job-input-error"></span>
-            </label>
-          </fieldset>
-        </PopupWithForm>
+        <EditProfilePopup isOpen={popups.isEditProfilePopupOpen} onClose={closeAllPopups}
+          onUpdateUser={handleUpdateUser} />
 
         <PopupWithForm name="add-place" title="Новое место" buttonSubmitText="Cоздать"
           isOpen={popups.isAddPlacePopupOpen}

@@ -7,7 +7,7 @@ function PopupWithForm(props) {
       {/* edit-avatar (EditAvatar),  edit-profile (EditProfile),  add-place (AddPlace), confirm-delete (ConfirmDelete) */}
 
       <div className="popup__container">
-        <form name={props.name} className={`popup__form popup__${props.name}-form`}>
+        <form name={props.name} className={`popup__form popup__${props.name}-form`} onSubmit={props.onSubmit}>
           <h2 className="popup__title">{props.title}</h2>
 
           {/* тут будет вложенное содержимое в виде JSX-разметки */}
