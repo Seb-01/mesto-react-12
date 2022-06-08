@@ -14,6 +14,7 @@ import ImagePopup from "./mesto_imagepopup/ImagePopup";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import {api} from "../utils/Api";
 import EditProfilePopup from "./mesto_editprofilepopup/EditProfilePopup";
+import EditAvatarPopup from "./mesto_editavatarpopup/EditAvatarPopup";
 
 function App() {
 
@@ -111,7 +112,7 @@ function App() {
           {
             ...currentUser,
             name: userData.name,
-            about: userData.about,
+            about: userData.about
           }
         );
       })
@@ -119,6 +120,27 @@ function App() {
         console.log(`Ошибка при сохранении данных пользователя: ${err}!`)
       });
 
+    // закрываем все модальные окна
+    closeAllPopups();
+  }
+
+  // обработчик изменения аватара пользователя
+  function handleUpdateAvatar(newAvatar) {
+    // запрос на сервер: сохранить новые данные пользователя
+    api.updateAvatar(newAvatar)
+      // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+      .then ((userData) => {
+        // меняем состояние профиля пользователя
+        setCurrentUser(
+          {
+            ...currentUser,
+            avatar: userData.avatar
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(`Ошибка при сохранении аватара пользователя: ${err}!`)
+      });
     // закрываем все модальные окна
     closeAllPopups();
   }
@@ -140,6 +162,7 @@ function App() {
         <Footer/>
 
         {/* popups */}
+        {/* профиль пользователя */}
         <EditProfilePopup isOpen={popups.isEditProfilePopupOpen} onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser} />
 
@@ -176,27 +199,14 @@ function App() {
             </fieldset>
         </PopupWithForm>
 
-        <PopupWithForm name="edit-avatar" title="Обновить аватар" buttonSubmitText="Cохранить"
-          isOpen={popups.isEditAvatarPopupOpen}
-          onClose={closeAllPopups}>
-          <fieldset className="popup__info">
-            <label className="popup__field">
-              <input
-                id="avatar-link-input"
-                className="popup__input popup__input_field_link"
-                value=""
-                name="link"
-                placeholder="Сcылка на аватар"
-                type="url"
-                required
-              />
-              <span className="popup__input-error avatar-link-input-error"></span>
-            </label>
-          </fieldset>
-        </PopupWithForm>
+        {/* аватар пользователя */}
+        <EditAvatarPopup isOpen={popups.isEditAvatarPopupOpen} onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar} />
 
+        {/* конфирм удаления карточки */}
         <PopupWithForm name="confirm-delete" title="Вы уверены?" buttonSubmitText="Да"/>
 
+        {/* показ карточки при клике на нее */}
         <ImagePopup card={selectedCard} onClose={closeAllPopups}/>
 
       </div>
