@@ -15,6 +15,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import {api} from "../utils/Api";
 import EditProfilePopup from "./mesto_editprofilepopup/EditProfilePopup";
 import EditAvatarPopup from "./mesto_editavatarpopup/EditAvatarPopup";
+import AddPlacePopup from "./mesto_addplacepopup/AddPlacePopup";
 
 function App() {
 
@@ -46,6 +47,53 @@ function App() {
     })
     .catch((err) => {
       console.log(`Ошибка при запросе данных пользователя: ${err}!`)
+    });
+
+  }, []);
+
+  // переменная состояния, отвечающая за стейт данных о карточках
+  const [cards, setCards] = React.useState(
+    []
+  );
+
+  //обработчик клика на кнопку лайк
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        // теперь нужно эту карточку в нашем стейте найти и проапдейтить. Это вызовет ее перерисовку!
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    });
+  }
+
+  //обработчик удаления карточки
+  function handleCardDelete(card) {
+    // Отправляем запрос в API на удаление карточки
+    api.deleteCard(card._id)
+      .then(() => {
+        // теперь нужно эту карточку убрать из нашего стейта. Это вызовет ее перерисовку (удаление из DOM)!
+        // создаем копию массива, исключив из него удалённую карточку
+        // колбэк обновит существующую коллекцию из стейта — на вход идет значение текущего стейта,
+        // на выход — не совершенно новое (ключи!), а обновленное значение (коллекция без удаляемой карточки):
+        setCards(cards => cards.filter(c => c.owner._id !== currentUser._id));
+    });
+  }
+
+  // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
+  // запрос в API за карточками
+  React.useEffect(() => {
+    api.getInitialCards()
+
+    // обрабатываем полученные данные деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+    .then ((cards) => {
+      // карточки загружаем
+      setCards(cards);
+    })
+    .catch((err) => {
+      console.log(`Ошибка при запросе карточек: ${err}!`)
     });
 
   }, []);
@@ -145,6 +193,21 @@ function App() {
     closeAllPopups();
   }
 
+  // обработчик добавления новой карточки
+  function handleAddPlaceSubmit(cardData) {
+    api.addCard(cardData)
+      // обновляем стейт cards с помощью расширенной копии текущего массива — используя spred оператор ...
+      .then ((newCard) => {
+        // меняем состояние профиля пользователя
+        setCards([newCard, ...cards]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка при сохранении новой карточки: ${err}!`)
+      });
+    // закрываем все модальные окна
+    closeAllPopups();
+  }
+
 
     return (
       // внедряем общий контекст с помощью провайдера со значением стейта currentUser
@@ -157,7 +220,11 @@ function App() {
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick} />
+          onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
+           />
 
         <Footer/>
 
@@ -166,38 +233,9 @@ function App() {
         <EditProfilePopup isOpen={popups.isEditProfilePopupOpen} onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser} />
 
-        <PopupWithForm name="add-place" title="Новое место" buttonSubmitText="Cоздать"
-          isOpen={popups.isAddPlacePopupOpen}
-          onClose={closeAllPopups}>
-          <fieldset className="popup__info">
-            <label className="popup__field">
-              <input
-                id="mesto-name-input"
-                type="text"
-                className="popup__input popup__input_field_mesto-name"
-                value=""
-                name="name"
-                placeholder="Название"
-                minlenght="2"
-                maxlenght="30"
-                required
-              />
-              <span className="popup__input-error mesto-name-input-error"></span>
-            </label>
-            <label className="popup__field">
-              <input
-                id="link-input"
-                className="popup__input popup__input_field_link"
-                value=""
-                name="link"
-                placeholder="Сcылка на картинку"
-                type="url"
-                required
-              />
-              <span className="popup__input-error link-input-error"></span>
-            </label>
-            </fieldset>
-        </PopupWithForm>
+        {/* добавление карточки */}
+        <AddPlacePopup isOpen={popups.isAddPlacePopupOpen} onClose={closeAllPopups}
+           onAddPlace={handleAddPlaceSubmit}/>
 
         {/* аватар пользователя */}
         <EditAvatarPopup isOpen={popups.isEditAvatarPopupOpen} onClose={closeAllPopups}

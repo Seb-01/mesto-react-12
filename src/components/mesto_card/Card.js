@@ -33,7 +33,6 @@ function Card(props) {
 
   function handleDeleteClick() {
     props.onCardDelete(props.card);
-    console.log(props.card);
   }
 
 
