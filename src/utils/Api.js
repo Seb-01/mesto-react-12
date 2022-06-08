@@ -153,11 +153,11 @@ class Api {
       })
       .then((res) => this._checkResponse(res))
       .catch((err) => {
-        console.log(`Ошибка при выполнении запросе: ${err}!`)
+        console.log(`Ошибка при выполнении запроса: ${err}!`)
       });
    }
 
-     /** Публичный метод для лайка карточки
+  /** Публичный метод для лайка карточки
    * @param {object} cardId - id карточки
    */
   likeCard(cardId) {
@@ -170,9 +170,31 @@ class Api {
       })
       .then((res) => this._checkResponse(res))
       .catch((err) => {
-        console.log(`Ошибка при выполнении запросе: ${err}!`)
+        console.log(`Ошибка при выполнении запроса: ${err}!`)
       });
    }
+
+  /** Изменить статус лайка на противоположный))
+   *
+   * @param {*} cardID
+   * @param {*} isLiked
+   */
+  changeLikeCardStatus(cardId, isLiked) {
+    const method = isLiked ? "DELETE" : "PUT";
+    const request = this._baseUrl + `/cards/${cardId}/likes`;
+    // отправляем запрос
+    return fetch(request,
+      {
+        method: method,
+        headers: this._headers
+      })
+      .then((res) => this._checkResponse(res))
+      .catch((err) => {
+        console.log(`Ошибка при выполнении запроса: ${err}!`)
+      });
+
+  }
+
 }
 
 // Здесь создаем экземпляр класса Api с нужными параметрами, включая токен, и экспортируем этот экземпляр вместо самого класса

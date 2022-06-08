@@ -27,12 +27,23 @@ function Card(props) {
     props.onCardClick(props.card);
   }
 
+  function handleLikeClick() {
+    props.onCardLike(props.card);
+  }
+
+  function handleDeleteClick() {
+    props.onCardDelete(props.card);
+    console.log(props.card);
+  }
+
+
   return (
     <article className="elements__card">
       <button
         className={cardDeleteButtonClassName}
         type="button"
         aria-label="Trash button"
+        onClick={handleDeleteClick}
       ></button>
       <img className="elements__photo" src={props.card.link} alt={props.card.name}
         // не забываем добавить обработчик клика на карточке
@@ -44,6 +55,7 @@ function Card(props) {
             className={cardLikeButtonClassName}
             type="button"
             aria-label="Like button"
+            onClick={handleLikeClick}
           ></button>
           <p className="elements__likes-number">{props.card.likes.length}</p>
         </div>

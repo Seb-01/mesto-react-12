@@ -1,5 +1,5 @@
 import React from "react";
-import {api} from "../../utils/Api";
+import { api } from "../../utils/Api";
 
 import Card from "../mesto_card/Card";
 
@@ -30,6 +30,32 @@ function Main(props) {
     });
 
   }, []);
+
+  //обработчик клика на кнопку лайк
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        // теперь нужно эту карточку в нашем стейте найти и проапдейтить. Это вызовет ее перерисовку!
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    });
+  }
+
+  //обработчик удаления карточки
+  function handleCardDelete(card) {
+    // Отправляем запрос в API на удаление карточки
+    api.deleteCard(card._id)
+      .then(() => {
+        // теперь нужно эту карточку убрать из нашего стейта. Это вызовет ее перерисовку (удаление из DOM)!
+        // создаем копию массива, исключив из него удалённую карточку
+        // колбэк обновит существующую коллекцию из стейта — на вход идет значение текущего стейта,
+        // на выход — не совершенно новое (ключи!), а обновленное значение (коллекция без удаляемой карточки):
+        setCards(cards => cards.filter(c => c.owner._id !== currentUser._id));
+    });
+  }
 
   return (
     <>
@@ -72,7 +98,8 @@ function Main(props) {
       <section className="elements">
         {/* карточки отображаем */}
         {cards.map((item) => (
-          <Card key={item._id} card={item} onCardClick={props.onCardClick}/>
+          <Card key={item._id} card={item} onCardClick={props.onCardClick} onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}/>
           )
         )}
       </section>
