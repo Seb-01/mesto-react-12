@@ -2,7 +2,6 @@ import React from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function Card(props) {
-
   // подписываемся на контекст CurrentUserContext
   const currentUser = React.useContext(CurrentUserContext);
 
@@ -10,18 +9,17 @@ function Card(props) {
   const isOwn = props.card.owner._id === currentUser._id;
 
   // Создаём переменную, которую после зададим в `className` для кнопки удаления
-  const cardDeleteButtonClassName = (
-    `elements__trash-button ${isOwn ? '' : 'elements__trash-button_hidden'}`
-  );
+  const cardDeleteButtonClassName = `elements__trash-button ${
+    isOwn ? "" : "elements__trash-button_hidden"
+  }`;
 
   // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
-  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+  const isLiked = props.card.likes.some((i) => i._id === currentUser._id);
 
   // Создаём переменную, которую после зададим в `className` для кнопки лайка
-  const cardLikeButtonClassName = (
-    `elements__like-button ${isLiked ? 'elements__like-button_active' : ''}`
-  );
-
+  const cardLikeButtonClassName = `elements__like-button ${
+    isLiked ? "elements__like-button_active" : ""
+  }`;
 
   function handleClick() {
     props.onCardClick(props.card);
@@ -35,7 +33,6 @@ function Card(props) {
     props.onCardDelete(props.card);
   }
 
-
   return (
     <article className="elements__card">
       <button
@@ -44,9 +41,13 @@ function Card(props) {
         aria-label="Trash button"
         onClick={handleDeleteClick}
       ></button>
-      <img className="elements__photo" src={props.card.link} alt={props.card.name}
+      <img
+        className="elements__photo"
+        src={props.card.link}
+        alt={props.card.name}
         // не забываем добавить обработчик клика на карточке
-        onClick={handleClick}/>
+        onClick={handleClick}
+      />
       <div className="elements__wrapper">
         <h2 className="elements__title">{props.card.name}</h2>
         <div className="elements__like-zone-wrapper">

@@ -1,15 +1,13 @@
 import React from "react";
 import { api } from "../../utils/Api";
 
-import Card from "../mesto_card/Card";
+import Card from "../Card/Card";
 
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function Main(props) {
-
   // подписываемся на контекст CurrentUserContext
   const currentUser = React.useContext(CurrentUserContext);
-
 
   return (
     <>
@@ -20,7 +18,7 @@ function Main(props) {
           type="button"
           aria-label="Edit button"
           onClick={props.onEditAvatar}
-          >
+        >
           <img
             className="profile__avatar"
             src={currentUser.avatar}
@@ -52,12 +50,16 @@ function Main(props) {
       <section className="elements">
         {/* карточки отображаем */}
         {props.cards.map((item) => (
-          <Card key={item._id} card={item} onCardClick={props.onCardClick} onCardLike={props.onCardLike}
-            onCardDelete={props.onCardDelete}/>
-          )
-        )}
+          <Card
+            key={item._id}
+            card={item}
+            onCardClick={props.onCardClick}
+            onCardLike={props.onCardLike}
+            onCardDelete={props.onCardDelete}
+          />
+        ))}
       </section>
-  </>
+    </>
   );
 }
 
