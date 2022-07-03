@@ -20,6 +20,7 @@ import { Route, Switch } from "react-router-dom";
 import Login from "../Login/Login";
 import Registration from "../Registration/Registration";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import { withRouter } from "react-router-dom";
 
 function App() {
   // данные текущего пользователя
@@ -32,6 +33,14 @@ function App() {
 
   // стейт-переменная со статусом пользователя - вошел в систему или нет?
   const [loggedIn, setLoggedIn] = React.useState(false);
+
+  // стейт-переменная с email пользователя
+  const [userEmail, setUserEmail] = React.useState("");
+
+  function handleLogin(userEmail) {
+    setLoggedIn(true);
+    setUserEmail(userEmail);
+  }
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
@@ -212,7 +221,7 @@ function App() {
     // внедряем общий контекст с помощью провайдера со значением стейта currentUser
     <CurrentUserContext.Provider value={currentUser}>
       <div>
-        <Header logo={logoMestoHeader} email="beketov-70@bk.ru" label="Выход" />
+        <Header logo={logoMestoHeader} email={userEmail} label="Выход" />
         <Switch>
           <ProtectedRoute
             exact
@@ -240,7 +249,12 @@ function App() {
           </Route>
           {/* авторизация пользователей */}
           <Route path="/sign-in">
-            <Login name="login" title="Вход" buttonSubmitText="Войти" />
+            <Login
+              name="login"
+              title="Вход"
+              buttonSubmitText="Войти"
+              handleLogin={handleLogin}
+            />
           </Route>
         </Switch>
 
@@ -278,4 +292,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);

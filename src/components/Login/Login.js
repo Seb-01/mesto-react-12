@@ -34,22 +34,13 @@ class Login extends React.Component {
     // применим синтаксис деструктуризации к this.state
     const { password, email } = this.state;
     apiAuth
-      .register(password, email)
+      .login(password, email)
       // здесь уже данные пользователя от сервера
-      .then((res) => {
-        console.log(res);
-        if (res) {
-          this.setState(
-            {
-              message: "",
-            },
-            () => {
-              this.props.history.push("/sign-in");
-            }
-          );
-        } else {
-          this.setState({
-            message: "Что-то пошло не так!",
+      .then((data) => {
+        if (data.token) {
+          this.setState({ email: "", password: "" }, () => {
+            this.props.handleLogin(email);
+            this.props.history.push("/");
           });
         }
       })

@@ -152,7 +152,7 @@ class Api {
     }).then((res) => this._checkResponse(res));
   }
 
-  /** создать  (зарегистрировать) пользователя
+  /** создать (зарегистрировать) пользователя
    *
    */
   register(password, email) {
@@ -167,6 +167,33 @@ class Api {
       })
         // выполнится, если промис исполнен. Аргумент - функция обработчик успешного выполнения промиса
         .then((res) => this._checkResponse(res))
+    );
+  }
+
+  /** авторизация пользователя
+   *
+   */
+  login(password, email) {
+    const request = this._baseUrl + "/signin";
+
+    return (
+      fetch(request, {
+        method: "POST",
+        headers: this._headers,
+        // JSON.stringify - для преобразования объекта в JSON
+        body: JSON.stringify({ password, email }),
+      })
+        // выполнится, если промис исполнен. Аргумент - функция обработчик успешного выполнения промиса
+        .then((res) => this._checkResponse(res))
+        .then((data) => {
+          if (data.token) {
+            // сохраняем токен
+            localStorage.setItem("jwt", data.token);
+            return data;
+          } else {
+            return;
+          }
+        })
     );
   }
 }

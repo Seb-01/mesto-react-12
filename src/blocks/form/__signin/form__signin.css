@@ -1,0 +1,20 @@
+.form__signin {
+  width: 358px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px auto 0;
+  transition: opacity 0.3s linear;
+  cursor: pointer;
+}
+
+.form__signin:hover {
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 767px) {
+  .form__signin {
+    max-width: 260px;
+  }
+}
