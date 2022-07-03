@@ -1,47 +1,42 @@
 import React from "react";
 import Form from "../Form/Form";
 import { apiAuth } from "../../utils/Api";
-import { withRouter } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-class Login extends React.Component {
-  constructor(props) {
-    // Добавляем стейты, которые привяжем к полям ввода (управляемые компоненты) в форме
-    super(props);
-    this.state = {
-      password: "",
-      email: "",
-    };
+function Login(props) {
+  const history = useHistory();
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  // Добавляем стейты, которые привяжем к полям ввода (управляемые компоненты) в форме
+  // name
+  const [email, setEmail] = React.useState("");
+  // description
+  const [password, setPassword] = React.useState("");
 
   //обработчик изменения input
-  handleChange(event) {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value,
-    });
+  function handleChange(event) {
+    const target = event.target;
+    // обновляем стейты в зависимости от имени поля: email или password
+    target.name === "email"
+      ? setEmail(target.value)
+      : setPassword(target.value);
   }
 
   // обработчик Submit формы
-  handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
 
     // сюда добавим логику обработки формы регистрации
     // Отправляем запрос в API регистрацию пользователя
 
-    // применим синтаксис деструктуризации к this.state
-    const { password, email } = this.state;
     apiAuth
       .login(password, email)
       // здесь уже данные пользователя от сервера
       .then((data) => {
         if (data.token) {
-          this.setState({ email: "", password: "" }, () => {
-            this.props.handleLogin(email);
-            this.props.history.push("/");
-          });
+          setEmail("");
+          setPassword("");
+          props.handleLogin(email);
+          history.push("/");
         }
       })
       .catch((err) => {
@@ -49,19 +44,17 @@ class Login extends React.Component {
       });
   }
 
-  render() {
-    return (
-      <Form
-        name={this.props.name}
-        title={this.props.title}
-        email={this.state.email}
-        password={this.state.password}
-        buttonSubmitText={this.props.buttonSubmitText}
-        onSubmit={this.handleSubmit}
-        onChange={this.handleChange}
-      />
-    );
-  }
+  return (
+    <Form
+      name={props.name}
+      title={props.title}
+      email={email}
+      password={password}
+      buttonSubmitText={props.buttonSubmitText}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+    />
+  );
 }
 
-export default withRouter(Login);
+export default Login;
