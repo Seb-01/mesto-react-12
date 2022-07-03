@@ -16,6 +16,11 @@ import EditProfilePopup from "../EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup";
 import AddPlacePopup from "../AddPlacePopup/AddPlacePopup";
 
+import { Route, Switch } from "react-router-dom";
+import Login from "../Login/Login";
+import Registration from "../Registration/Registration";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+
 function App() {
   // данные текущего пользователя
   const [currentUser, setCurrentUser] = React.useState({
@@ -24,6 +29,9 @@ function App() {
     avatar: "",
     _id: "",
   });
+
+  // стейт-переменная со статусом пользователя - вошел в систему или нет?
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
@@ -204,22 +212,37 @@ function App() {
     // внедряем общий контекст с помощью провайдера со значением стейта currentUser
     <CurrentUserContext.Provider value={currentUser}>
       <div>
-        <Header logo={logoMestoHeader} />
-
-        <Main
-          avatar={avatar}
-          name="Жак-Ив Кусто"
-          about="Исследователь океана"
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-        />
-
-        <Footer />
+        <Header logo={logoMestoHeader} email="beketov-70@bk.ru" label="Выход" />
+        <Switch>
+          <ProtectedRoute
+            exact
+            path="/"
+            loggedIn={loggedIn}
+            component={Main}
+            avatar={avatar}
+            name="Жак-Ив Кусто"
+            about="Исследователь океана"
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+          />
+          {/* регистрация пользователей */}
+          <Route path="/sign-up">
+            <Registration
+              name="registration"
+              title="Регистрация"
+              buttonSubmitText="Зарегистрироваться"
+            />
+          </Route>
+          {/* авторизация пользователей */}
+          <Route path="/sign-in">
+            <Login name="login" title="Вход" buttonSubmitText="Войти" />
+          </Route>
+        </Switch>
 
         {/* popups */}
         {/* профиль пользователя */}
@@ -228,30 +251,28 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-
         {/* добавление карточки */}
         <AddPlacePopup
           isOpen={popups.isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
         />
-
         {/* аватар пользователя */}
         <EditAvatarPopup
           isOpen={popups.isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
-
         {/* конфирм удаления карточки */}
         <PopupWithForm
           name="confirm-delete"
           title="Вы уверены?"
           buttonSubmitText="Да"
         />
-
         {/* показ карточки при клике на нее */}
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
+        <Footer />
       </div>
     </CurrentUserContext.Provider>
   );

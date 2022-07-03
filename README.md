@@ -2,7 +2,7 @@
 
 [https://practicum.yandex.ru](https://www.yandex.ru "Yandex Practicum!")
 
-## Проектная работа (№10) по курсу "Базовый JavaScript И работа с браузером"
+## Проектная работа (№12) по курсу "React"
 
 ---
 

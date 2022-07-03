@@ -14,6 +14,7 @@ class Api {
    */
   _checkResponse(res) {
     if (res.ok) {
+      // Метод json читает ответ от сервера в формате json и возвращает промис для обработки следующим then
       return res.json();
     }
     // если ошибка, отклоняем промис
@@ -150,10 +151,34 @@ class Api {
       headers: this._headers,
     }).then((res) => this._checkResponse(res));
   }
+
+  /** создать  (зарегистрировать) пользователя
+   *
+   */
+  register(password, email) {
+    const request = this._baseUrl + "/signup";
+
+    return (
+      fetch(request, {
+        method: "POST",
+        headers: this._headers,
+        // JSON.stringify - для преобразования объекта в JSON
+        body: JSON.stringify({ password, email }),
+      })
+        // выполнится, если промис исполнен. Аргумент - функция обработчик успешного выполнения промиса
+        .then((res) => this._checkResponse(res))
+    );
+  }
 }
 
 // Здесь создаем экземпляр класса Api с нужными параметрами, включая токен, и экспортируем этот экземпляр вместо самого класса
 export const api = new Api({
   baseUrl: `https://mesto.nomoreparties.co/v1/${cohort}`,
   headers: { authorization: token },
+});
+
+// Здесь создаем экземпляр класса Api и экспортируем этот экземпляр вместо самого класса
+export const apiAuth = new Api({
+  baseUrl: "https://auth.nomoreparties.co",
+  headers: { "Content-Type": "application/json" },
 });
