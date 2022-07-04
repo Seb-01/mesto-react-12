@@ -44,15 +44,22 @@ function App() {
 
   const history = useHistory();
 
-  //
-  function signOut() {
+  // //
+  function onSignOut() {
     console.log("Меня нажали!!");
     console.log(localStorage.getItem("jwt"));
     localStorage.removeItem("jwt");
     console.log(localStorage.getItem("jwt"));
     setLoggedIn(false);
+    setUserEmail("");
     history.push("/sign-in");
   }
+
+  // function goToRegister() {
+  //   console.log("Меня нажали!!");
+  //   setLoggedIn(false);
+  //   history.push("/sign-up");
+  // }
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
@@ -233,7 +240,12 @@ function App() {
     // внедряем общий контекст с помощью провайдера со значением стейта currentUser
     <CurrentUserContext.Provider value={currentUser}>
       <div>
-        <Header logo={logoMestoHeader} email={userEmail} signOut={signOut} />
+        <Header
+          logo={logoMestoHeader}
+          email={userEmail}
+          onSignOut={onSignOut}
+          // goToRegister={goToRegister}
+        />
         <Switch>
           <ProtectedRoute
             exact

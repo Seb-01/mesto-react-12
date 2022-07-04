@@ -10,7 +10,7 @@
   transition: opacity 0.3s linear;
   cursor: pointer;
   text-decoration: none;
-  display: none;
+  margin: auto;
 }
 
 .header__link:hover {
