@@ -45,6 +45,8 @@ function Form(props) {
             {props.buttonSubmitText}
           </button>
         </form>
+        {/* тут будет вложенное содержимое в виде JSX-разметки */}
+        {props.children}
       </div>
     </>
   );

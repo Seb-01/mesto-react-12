@@ -7,42 +7,53 @@ function Header(props) {
       <img className="header__logo" src={props.logo} alt="Лого Mesto Russia" />
       <div className="header__authorization-place">
         <p className="header__email">{props.email}</p>
-        <nav>
-          <NavLink
-            exact
-            to="/"
-            activeClassName="header__link_active"
-            className="header__link"
+
+        <NavLink
+          exact
+          to="/"
+          activeClassName="header__link_active"
+          className="header__link"
+        >
+          <button
+            className="header__link-button"
+            type="button"
+            aria-label="Link button"
+            onClick={props.signOut}
           >
             Выйти
-          </NavLink>
+          </button>
+        </NavLink>
 
-          <NavLink
-            exact
-            to="/sign-in"
-            activeClassName="header__link_active"
-            className="header__link"
+        <NavLink
+          exact
+          to="/sign-in"
+          activeClassName="header__link_active"
+          className="header__link"
+        >
+          <button
+            className="header__link-button"
+            type="button"
+            aria-label="Link button"
+            onClick={props.signOut}
           >
             Войти
-          </NavLink>
-          <NavLink
-            exact
-            to="/sign-up"
-            activeClassName="header__link_active"
-            className="header__link"
+          </button>
+        </NavLink>
+        <NavLink
+          exact
+          to="/sign-up"
+          activeClassName="header__link_active"
+          className="header__link"
+        >
+          <button
+            className="header__link-button"
+            type="button"
+            aria-label="Link button"
+            onClick={props.signOut}
           >
             Регистрация
-          </NavLink>
-        </nav>
-
-        {/* <button
-          className="header__link-button"
-          type="button"
-          aria-label="Link button"
-          onClick={props.onLink}
-        >
-          {props.label}
-        </button> */}
+          </button>
+        </NavLink>
       </div>
     </header>
   );

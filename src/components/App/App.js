@@ -20,7 +20,7 @@ import { Route, Switch } from "react-router-dom";
 import Login from "../Login/Login";
 import Registration from "../Registration/Registration";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 
 function App() {
   // данные текущего пользователя
@@ -40,6 +40,18 @@ function App() {
   function handleLogin(userEmail) {
     setLoggedIn(true);
     setUserEmail(userEmail);
+  }
+
+  const history = useHistory();
+
+  //
+  function signOut() {
+    console.log("Меня нажали!!");
+    console.log(localStorage.getItem("jwt"));
+    localStorage.removeItem("jwt");
+    console.log(localStorage.getItem("jwt"));
+    setLoggedIn(false);
+    history.push("/sign-in");
   }
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
@@ -221,7 +233,7 @@ function App() {
     // внедряем общий контекст с помощью провайдера со значением стейта currentUser
     <CurrentUserContext.Provider value={currentUser}>
       <div>
-        <Header logo={logoMestoHeader} email={userEmail} label="Выход" />
+        <Header logo={logoMestoHeader} email={userEmail} signOut={signOut} />
         <Switch>
           <ProtectedRoute
             exact

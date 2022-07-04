@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "../Form/Form";
 import { apiAuth } from "../../utils/Api";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 class Registration extends React.Component {
   constructor(props) {
@@ -60,15 +60,21 @@ class Registration extends React.Component {
 
   render() {
     return (
-      <Form
-        name={this.props.name}
-        title={this.props.title}
-        email={this.state.email}
-        password={this.state.password}
-        buttonSubmitText={this.props.buttonSubmitText}
-        onSubmit={this.handleSubmit}
-        onChange={this.handleChange}
-      />
+      <>
+        <Form
+          name={this.props.name}
+          title={this.props.title}
+          email={this.state.email}
+          password={this.state.password}
+          buttonSubmitText={this.props.buttonSubmitText}
+          onSubmit={this.handleSubmit}
+          onChange={this.handleChange}
+        >
+          <Link to="/sign-in" className="form__login-link">
+            Уже зарегистрированы? Войти
+          </Link>
+        </Form>
+      </>
     );
   }
 }
