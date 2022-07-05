@@ -60,7 +60,7 @@ function App() {
 
   const history = useHistory();
 
-  // //
+  // разлогон делаем
   function onSignOut() {
     localStorage.removeItem("jwt");
     setLoggedIn(false);

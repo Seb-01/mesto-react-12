@@ -17,7 +17,6 @@ function Header(props) {
             >
               Выйти
             </button>
-            {/* </Link> */}
           </Route>
 
           <Route path="/sign-up">
