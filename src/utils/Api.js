@@ -196,6 +196,28 @@ class Api {
         })
     );
   }
+
+  /** проверка токена
+   *
+   */
+  getContent(token) {
+    const request = this._baseUrl + "/users/me";
+    const newHeaders = this._headers;
+    newHeaders["Authorization"] = `Bearer ${token}`;
+
+    return (
+      fetch(request, {
+        method: "GET",
+        headers: newHeaders,
+      })
+        // выполнится, если промис исполнен. Аргумент - функция обработчик успешного выполнения промиса
+        .then((res) => this._checkResponse(res))
+        .then((data) => {
+          console.log(data);
+          return data;
+        })
+    );
+  }
 }
 
 // Здесь создаем экземпляр класса Api с нужными параметрами, включая токен, и экспортируем этот экземпляр вместо самого класса

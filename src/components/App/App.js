@@ -11,7 +11,7 @@ import PopupWithForm from "../PopupWithForm/PopupWithForm";
 import ImagePopup from "../ImagePopup/ImagePopup";
 
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { api } from "../../utils/Api";
+import { api, apiAuth } from "../../utils/Api";
 import EditProfilePopup from "../EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup";
 import AddPlacePopup from "../AddPlacePopup/AddPlacePopup";
@@ -75,6 +75,30 @@ function App() {
         console.log(`Ошибка при запросе данных пользователя: ${err}!`);
       });
   }, []);
+
+  // Проверка токена
+  function checkToken() {
+    // если у пользователя есть токен в localStorage,
+    // эта функция проверит валидность токена
+    if (localStorage.getItem("jwt")) {
+      const jwt = localStorage.getItem("jwt");
+      apiAuth
+        .getContent(jwt)
+        .then((res) => {
+          setUserEmail(res.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(`Ошибка при проверке токена: ${err}!`);
+        });
+    }
+  }
+
+  //
+  React.useEffect(() => {
+    checkToken();
+  }, [loggedIn]);
 
   // переменная состояния, отвечающая за стейт данных о карточках
   const [cards, setCards] = React.useState([]);
