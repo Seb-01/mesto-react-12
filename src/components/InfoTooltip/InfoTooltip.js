@@ -1,54 +1,40 @@
 import React from "react";
-import PopupWithForm from "../PopupWithForm/PopupWithForm";
+import PopupWithoutForm from "../PopupWithoutForm/PopupWithoutForm";
 
-function InfoTooltip(props) {
-  // записываем объект, возвращаемый хуком, в переменную
-  // этот объект присваиваем элементу input с помощью атрибута ref, чтобы получить доступ к нему и его значению!
-  const avatarLink = React.useRef(null);
-
-  // очищать инпуты нужно при открытии (монтировании)
-  // чтобы пользователь мог сразу же еще раз добавить что-то новое
-  // и ему не пришлось бы очищать инпуты вручную перед этим
-  React.useEffect(() => {
-    avatarLink.current.value = "";
-  }, [props.isOpen]);
-
-  // обработчик Submit формы
-  function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
-    e.preventDefault();
-
-    // Передаём значения управляемых компонентов во внешний обработчик
-    props.onUpdateAvatar({
-      link: avatarLink.current.value,
-    });
-  }
-
+function InfoToolTip(props) {
   return (
-    <PopupWithForm
-      name="edit-avatar"
-      title="Обновить аватар"
-      buttonSubmitText="Cохранить"
-      isOpen={props.isOpen}
-      onClose={props.onClose}
-      onSubmit={handleSubmit}
-    >
-      <fieldset className="popup__info">
-        <label className="popup__field">
-          <input
-            id="avatar-link-input"
-            className="popup__input popup__input_field_link"
-            name="link"
-            placeholder="Сcылка на аватар"
-            type="url"
-            required
-            ref={avatarLink}
+    <PopupWithoutForm isOpen={props.isOpen} onClose={props.onClose}>
+      {props.successReg ? (
+        <div className="popup__success-container">
+          <img
+            className="popup__success-pic"
+            src={props.success_pic}
+            alt="Pic success"
           />
-          <span className="popup__input-error avatar-link-input-error"></span>
-        </label>
-      </fieldset>
-    </PopupWithForm>
+
+          <p className="popup__exclamation">
+            Вы успешно
+            <br />
+            зарегистрировались!
+          </p>
+        </div>
+      ) : (
+        <div className="popup__success-container">
+          <img
+            className="popup__success-pic"
+            src={props.unsuccess_pic}
+            alt="Pic unsuccess"
+          />
+
+          <p className="popup__exclamation">
+            Что-то пошло не так!
+            <br />
+            Попробуйте еще раз.
+          </p>
+        </div>
+      )}
+    </PopupWithoutForm>
   );
 }
 
-export default InfoTooltip;
+export default InfoToolTip;

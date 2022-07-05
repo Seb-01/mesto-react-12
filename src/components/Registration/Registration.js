@@ -30,7 +30,6 @@ class Registration extends React.Component {
 
     // сюда добавим логику обработки формы регистрации
     // Отправляем запрос в API регистрацию пользователя
-
     // применим синтаксис деструктуризации к this.state
     const { password, email } = this.state;
     apiAuth
@@ -45,16 +44,14 @@ class Registration extends React.Component {
             },
             () => {
               this.props.history.push("/sign-in");
+              this.props.handleRegister(true);
             }
           );
-        } else {
-          this.setState({
-            message: "Что-то пошло не так!",
-          });
         }
       })
       .catch((err) => {
         console.log(`Ошибка при регистрации пользователя: ${err}!`);
+        this.props.handleRegister(false);
       });
   }
 

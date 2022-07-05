@@ -1,6 +1,9 @@
 import React from "react";
 
 import logoMestoHeader from "../../../src/images/logo_mesto_header.svg";
+import successPic from "../../../src/images/success_pic.svg";
+import unsuccessPic from "../../../src/images/unsuccess_pic.svg";
+
 import avatar from "../../../src/images/photo_j_i_kusto.jpg";
 
 import Header from "../Header/Header";
@@ -15,6 +18,7 @@ import { api, apiAuth } from "../../utils/Api";
 import EditProfilePopup from "../EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup";
 import AddPlacePopup from "../AddPlacePopup/AddPlacePopup";
+import InfoToolTip from "../InfoToolTip/InfoToolTip";
 
 import { Route, Switch } from "react-router-dom";
 import Login from "../Login/Login";
@@ -37,29 +41,32 @@ function App() {
   // стейт-переменная с email пользователя
   const [userEmail, setUserEmail] = React.useState("");
 
+  // стейт-переменная с результатом регистрации
+  const [successReg, setSuccessReg] = React.useState(false);
+
   function handleLogin(userEmail) {
     setLoggedIn(true);
     setUserEmail(userEmail);
+  }
+
+  function handleRegister(res) {
+    if (res) setSuccessReg(true);
+    else setSuccessReg(false);
+    setPopups({
+      ...popups, // здесь мы копируем текущее состояние объекта
+      isInfoToolTipOpen: true, //здесь перезаписываем свойство isInfoToolTipOpen
+    });
   }
 
   const history = useHistory();
 
   // //
   function onSignOut() {
-    console.log("Меня нажали!!");
-    console.log(localStorage.getItem("jwt"));
     localStorage.removeItem("jwt");
-    console.log(localStorage.getItem("jwt"));
     setLoggedIn(false);
     setUserEmail("");
     history.push("/sign-in");
   }
-
-  // function goToRegister() {
-  //   console.log("Меня нажали!!");
-  //   setLoggedIn(false);
-  //   history.push("/sign-up");
-  // }
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
@@ -163,11 +170,12 @@ function App() {
     setSelectedCard(card);
   }
 
-  // переменные состояния, отвечающие за видимость трёх попапов
+  // переменные состояния, отвечающие за видимость попапов
   const [popups, setPopups] = React.useState({
     isEditProfilePopupOpen: false,
     isAddPlacePopupOpen: false,
     isEditAvatarPopupOpen: false,
+    isInfoToolTipOpen: false,
   });
 
   // обработчики нажатия на кнопки
@@ -198,6 +206,7 @@ function App() {
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
+      isInfoToolTipOpen: false,
     });
 
     setSelectedCard({});
@@ -293,6 +302,7 @@ function App() {
               name="registration"
               title="Регистрация"
               buttonSubmitText="Зарегистрироваться"
+              handleRegister={handleRegister}
             />
           </Route>
           {/* авторизация пользователей */}
@@ -300,6 +310,7 @@ function App() {
             <Login
               name="login"
               title="Вход"
+              email={userEmail}
               buttonSubmitText="Войти"
               handleLogin={handleLogin}
             />
@@ -333,6 +344,14 @@ function App() {
         />
         {/* показ карточки при клике на нее */}
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        {/* инфо о результате регистрации */}
+        <InfoToolTip
+          isOpen={popups.isInfoToolTipOpen}
+          onClose={closeAllPopups}
+          successReg={successReg}
+          success_pic={successPic}
+          unsuccess_pic={unsuccessPic}
+        />
 
         <Footer />
       </div>

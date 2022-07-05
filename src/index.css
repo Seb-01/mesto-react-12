@@ -53,6 +53,9 @@
 @import url(./blocks/popup/__input-error/_active/popup__input-error_active.css);
 @import url(./blocks/popup/__input/_type/popup__input_type_error.css);
 @import url(./blocks/popup/__field/popup__field.css);
+@import url(./blocks/popup/__success-pic/popup__success-pic.css);
+@import url(./blocks/popup/__success-container/popup__success-container.css);
+@import url(./blocks/popup/__exclamation/popup__exclamation.css);
 
 /* elements */
 @import url(./blocks/elements/elements.css);

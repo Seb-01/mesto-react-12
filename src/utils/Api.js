@@ -213,7 +213,6 @@ class Api {
         // выполнится, если промис исполнен. Аргумент - функция обработчик успешного выполнения промиса
         .then((res) => this._checkResponse(res))
         .then((data) => {
-          console.log(data);
           return data;
         })
     );
