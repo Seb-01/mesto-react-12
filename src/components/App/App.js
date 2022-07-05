@@ -18,7 +18,7 @@ import { api, apiAuth } from "../../utils/Api";
 import EditProfilePopup from "../EditProfilePopup/EditProfilePopup";
 import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup";
 import AddPlacePopup from "../AddPlacePopup/AddPlacePopup";
-import InfoToolTip from "../InfoToolTip/InfoToolTip";
+import InfoToolTip2 from "../InfoToolTip2/InfoToolTip2";
 
 import { Route, Switch } from "react-router-dom";
 import Login from "../Login/Login";
@@ -345,7 +345,7 @@ function App() {
         {/* показ карточки при клике на нее */}
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         {/* инфо о результате регистрации */}
-        <InfoToolTip
+        <InfoToolTip2
           isOpen={popups.isInfoToolTipOpen}
           onClose={closeAllPopups}
           successReg={successReg}

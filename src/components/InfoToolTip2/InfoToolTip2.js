@@ -1,7 +1,7 @@
 import React from "react";
 import PopupWithoutForm from "../PopupWithoutForm/PopupWithoutForm";
 
-function InfoToolTip(props) {
+function InfoToolTip2(props) {
   return (
     <PopupWithoutForm isOpen={props.isOpen} onClose={props.onClose}>
       {props.successReg ? (
@@ -37,4 +37,4 @@ function InfoToolTip(props) {
   );
 }
 
-export default InfoToolTip;
+export default InfoToolTip2;
