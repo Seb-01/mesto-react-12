@@ -28,6 +28,9 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { withRouter, useHistory } from "react-router-dom";
 
 function App() {
+  // переменная состояния, отвечающая за стейт данных о карточках
+  const [cards, setCards] = useState([]);
+
   // данные текущего пользователя
   const [currentUser, setCurrentUser] = useState({
     name: "",
@@ -72,7 +75,7 @@ function App() {
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
   useEffect(() => {
-    if (1) {
+    if (loggedIn) {
       api
         .getUserProfile()
         // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
@@ -85,14 +88,14 @@ function App() {
           console.log(`Ошибка при запросе данных пользователя: ${err}!`);
         });
     }
-  }, []);
+  }, [loggedIn]);
 
   // Проверка токена
   function checkToken() {
     // если у пользователя есть токен в localStorage,
     // эта функция проверит валидность токена
-    if (localStorage.getItem("jwt")) {
-      const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
       apiAuth
         .getContent(jwt)
         .then((res) => {
@@ -110,9 +113,6 @@ function App() {
   useEffect(() => {
     checkToken();
   }, [loggedIn]);
-
-  // переменная состояния, отвечающая за стейт данных о карточках
-  const [cards, setCards] = useState([]);
 
   // обработчик клика на кнопку лайк
   function handleCardLike(card) {
@@ -153,7 +153,7 @@ function App() {
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за карточками
   useEffect(() => {
-    if (1) {
+    if (loggedIn) {
       api
         .getInitialCards()
         // обрабатываем полученные данные деструктурируем ответ от сервера, чтобы было понятнее, что пришло
@@ -166,7 +166,7 @@ function App() {
           console.log(`Ошибка при запросе карточек: ${err}!`);
         });
     }
-  }, []);
+  }, [loggedIn]);
 
   // переменная состояния, отвечающая за полноразмерную картинку
   // {} т.к. ожидаем что здесь будет объект с данными карточки
