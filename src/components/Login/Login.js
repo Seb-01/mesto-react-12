@@ -1,11 +1,7 @@
 import React from "react";
 import Form from "../Form/Form";
-import { apiAuth } from "../../utils/Api";
-import { useHistory } from "react-router-dom";
 
 function Login(props) {
-  const history = useHistory();
-
   // Добавляем стейты, которые привяжем к полям ввода (управляемые компоненты) в форме
   // name
   const [email, setEmail] = React.useState("");
@@ -24,24 +20,9 @@ function Login(props) {
   // обработчик Submit формы
   function handleSubmit(event) {
     event.preventDefault();
-
-    // сюда добавим логику обработки формы регистрации
-    // Отправляем запрос в API регистрацию пользователя
-
-    apiAuth
-      .login(password, email)
-      // здесь уже данные пользователя от сервера
-      .then((data) => {
-        if (data.token) {
-          setEmail("");
-          setPassword("");
-          props.handleLogin(email);
-          history.push("/");
-        }
-      })
-      .catch((err) => {
-        console.log(`Ошибка при регистрации пользователя: ${err}!`);
-      });
+    setEmail("");
+    setPassword("");
+    props.onLogin(password, email);
   }
 
   return (

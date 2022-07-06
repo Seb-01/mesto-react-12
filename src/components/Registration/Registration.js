@@ -1,6 +1,5 @@
 import React from "react";
 import Form from "../Form/Form";
-import { apiAuth } from "../../utils/Api";
 import { Link, withRouter } from "react-router-dom";
 
 class Registration extends React.Component {
@@ -27,32 +26,7 @@ class Registration extends React.Component {
   // обработчик Submit формы
   handleSubmit(event) {
     event.preventDefault();
-
-    // сюда добавим логику обработки формы регистрации
-    // Отправляем запрос в API регистрацию пользователя
-    // применим синтаксис деструктуризации к this.state
-    const { password, email } = this.state;
-    apiAuth
-      .register(password, email)
-      // здесь уже данные пользователя от сервера
-      .then((res) => {
-        console.log(res);
-        if (res) {
-          this.setState(
-            {
-              message: "",
-            },
-            () => {
-              this.props.history.push("/sign-in");
-              this.props.handleRegister(true);
-            }
-          );
-        }
-      })
-      .catch((err) => {
-        console.log(`Ошибка при регистрации пользователя: ${err}!`);
-        this.props.handleRegister(false);
-      });
+    this.props.onRegister(this.state.password, this.state.email);
   }
 
   render() {

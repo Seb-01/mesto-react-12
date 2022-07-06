@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from "react";
 
 import logoMestoHeader from "../../../src/images/logo_mesto_header.svg";
 import successPic from "../../../src/images/success_pic.svg";
@@ -28,7 +29,7 @@ import { withRouter, useHistory } from "react-router-dom";
 
 function App() {
   // данные текущего пользователя
-  const [currentUser, setCurrentUser] = React.useState({
+  const [currentUser, setCurrentUser] = useState({
     name: "",
     about: "",
     avatar: "",
@@ -36,22 +37,22 @@ function App() {
   });
 
   // стейт-переменная со статусом пользователя - вошел в систему или нет?
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   // стейт-переменная с email пользователя
-  const [userEmail, setUserEmail] = React.useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   // стейт-переменная с результатом регистрации
-  const [successReg, setSuccessReg] = React.useState(false);
+  const [isSuccessRegLog, setIsSuccessRegLog] = useState(false);
 
   function handleLogin(userEmail) {
     setLoggedIn(true);
     setUserEmail(userEmail);
   }
 
-  function handleRegister(res) {
-    if (res) setSuccessReg(true);
-    else setSuccessReg(false);
+  function handleSuccessRegLog(res) {
+    if (res) setIsSuccessRegLog(true);
+    else setIsSuccessRegLog(false);
     setPopups({
       ...popups, // здесь мы копируем текущее состояние объекта
       isInfoToolTipOpen: true, //здесь перезаписываем свойство isInfoToolTipOpen
@@ -70,17 +71,20 @@ function App() {
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за профилем пользователя
-  React.useEffect(() => {
-    api
-      .getUserProfile()
-      // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
-      .then((userData) => {
-        // меняем состояние профиля пользователя
-        setCurrentUser(userData);
-      })
-      .catch((err) => {
-        console.log(`Ошибка при запросе данных пользователя: ${err}!`);
-      });
+  useEffect(() => {
+    if (1) {
+      api
+        .getUserProfile()
+        // обрабатываем полученные данные и деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+        .then((userData) => {
+          // меняем состояние профиля пользователя
+          console.log(userData);
+          setCurrentUser(userData);
+        })
+        .catch((err) => {
+          console.log(`Ошибка при запросе данных пользователя: ${err}!`);
+        });
+    }
   }, []);
 
   // Проверка токена
@@ -103,12 +107,12 @@ function App() {
   }
 
   //
-  React.useEffect(() => {
+  useEffect(() => {
     checkToken();
   }, [loggedIn]);
 
   // переменная состояния, отвечающая за стейт данных о карточках
-  const [cards, setCards] = React.useState([]);
+  const [cards, setCards] = useState([]);
 
   // обработчик клика на кнопку лайк
   function handleCardLike(card) {
@@ -148,22 +152,25 @@ function App() {
 
   // добавляем эффект, вызываемый при монтировании компонента, который будет совершать
   // запрос в API за карточками
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      // обрабатываем полученные данные деструктурируем ответ от сервера, чтобы было понятнее, что пришло
-      .then((cards) => {
-        // карточки загружаем
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(`Ошибка при запросе карточек: ${err}!`);
-      });
+  useEffect(() => {
+    if (1) {
+      api
+        .getInitialCards()
+        // обрабатываем полученные данные деструктурируем ответ от сервера, чтобы было понятнее, что пришло
+        .then((cards) => {
+          // карточки загружаем
+          console.log(cards);
+          setCards(cards);
+        })
+        .catch((err) => {
+          console.log(`Ошибка при запросе карточек: ${err}!`);
+        });
+    }
   }, []);
 
   // переменная состояния, отвечающая за полноразмерную картинку
   // {} т.к. ожидаем что здесь будет объект с данными карточки
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const [selectedCard, setSelectedCard] = useState({});
 
   // обработчики нажатия на карточку
   function handleCardClick(card) {
@@ -171,7 +178,7 @@ function App() {
   }
 
   // переменные состояния, отвечающие за видимость попапов
-  const [popups, setPopups] = React.useState({
+  const [popups, setPopups] = useState({
     isEditProfilePopupOpen: false,
     isAddPlacePopupOpen: false,
     isEditAvatarPopupOpen: false,
@@ -269,6 +276,45 @@ function App() {
       });
   }
 
+  // обработчик login submit
+  function handleLoginSubmit(password, email) {
+    // сюда добавим логику обработки формы регистрации
+    // Отправляем запрос в API регистрацию пользователя
+    apiAuth
+      .login(password, email)
+      // здесь уже данные пользователя от сервера
+      .then((data) => {
+        if (data.token) {
+          handleLogin(email);
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(`Ошибка при регистрации пользователя: ${err}!`);
+        handleSuccessRegLog(false);
+      });
+  }
+
+  // обработчик registration
+  function handleRegisterSubmit(password, email) {
+    // сюда добавим логику обработки формы регистрации
+    // Отправляем запрос в API регистрацию пользователя
+    apiAuth
+      .register(password, email)
+      // здесь уже данные пользователя от сервера
+      .then((res) => {
+        console.log(res);
+        if (res) {
+          history.push("/sign-in");
+          handleSuccessRegLog(true);
+        }
+      })
+      .catch((err) => {
+        console.log(`Ошибка при регистрации пользователя: ${err}!`);
+        handleSuccessRegLog(false);
+      });
+  }
+
   return (
     // внедряем общий контекст с помощью провайдера со значением стейта currentUser
     <CurrentUserContext.Provider value={currentUser}>
@@ -302,7 +348,7 @@ function App() {
               name="registration"
               title="Регистрация"
               buttonSubmitText="Зарегистрироваться"
-              handleRegister={handleRegister}
+              onRegister={handleRegisterSubmit}
             />
           </Route>
           {/* авторизация пользователей */}
@@ -312,7 +358,7 @@ function App() {
               title="Вход"
               email={userEmail}
               buttonSubmitText="Войти"
-              handleLogin={handleLogin}
+              onLogin={handleLoginSubmit}
             />
           </Route>
         </Switch>
@@ -348,7 +394,7 @@ function App() {
         <InfoToolTip2
           isOpen={popups.isInfoToolTipOpen}
           onClose={closeAllPopups}
-          successReg={successReg}
+          successReg={isSuccessRegLog}
           success_pic={successPic}
           unsuccess_pic={unsuccessPic}
         />
